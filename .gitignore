@@ -55,3 +55,6 @@ buildSrc/build
 
 config.yml
 jetty-ssl.keystore
+
+terraform.tfstate*
+*.terraform

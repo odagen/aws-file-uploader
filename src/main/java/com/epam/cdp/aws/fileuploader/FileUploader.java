@@ -28,9 +28,8 @@ import java.nio.file.Paths;
 public class FileUploader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploader.class);
-    private static final String S3_BUCKET_NAME = "huge-objects-godagen";
+    private static final String S3_BUCKET_NAME = "huge-objects-odagen";
     private static final long MULTIPART_UPLOAD_THRESHOLD = (long) (5 * 1024 * 1025);
-
 
     public static void main(String[] args) {
         ArgumentParser argumentParser = ArgumentParsers.newFor("File").build()
@@ -60,21 +59,6 @@ public class FileUploader {
         new FileUploader().uploadFile(file);
     }
 
-    private AmazonS3 amazonS3Client() {
-        return AmazonS3ClientBuilder.standard()
-                .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .withRegion(Regions.EU_CENTRAL_1)
-                .build();
-    }
-
-    private TransferManager transferManager() {
-        return TransferManagerBuilder
-                .standard()
-                .withS3Client(amazonS3Client())
-                .withMultipartUploadThreshold(MULTIPART_UPLOAD_THRESHOLD)
-                .build();
-    }
-
     private void uploadFile(File file) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.addUserMetadata("x-amz-meta-huge-object", "true");
@@ -82,7 +66,6 @@ public class FileUploader {
                 .withMetadata(objectMetadata);
 
         TransferManager transferManager = transferManager();
-
         Upload upload = transferManager.upload(putObjectRequest);
         upload.addProgressListener(createProgressListener(upload, file.getName()));
         try {
@@ -92,6 +75,20 @@ public class FileUploader {
         } finally {
             transferManager.shutdownNow(false);
         }
+    }
+
+    private AmazonS3 amazonS3Client() {
+        return AmazonS3ClientBuilder.standard()
+                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .withRegion(Regions.EU_CENTRAL_1)
+                .build();
+    }
+
+    private TransferManager transferManager() {
+        return TransferManagerBuilder.standard()
+                .withS3Client(amazonS3Client())
+                .withMultipartUploadThreshold(MULTIPART_UPLOAD_THRESHOLD)
+                .build();
     }
 
     private ProgressListener createProgressListener(Transfer transfer, String fileName) {
