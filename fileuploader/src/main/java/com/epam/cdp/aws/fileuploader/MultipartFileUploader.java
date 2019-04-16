@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.nio.file.Paths;
 
-public class FileUploader {
+public class MultipartFileUploader {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileUploader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MultipartFileUploader.class);
     private static final String S3_BUCKET_NAME = "huge-objects-odagen";
     private static final long MULTIPART_UPLOAD_THRESHOLD = (long) (5 * 1024 * 1025);
 
@@ -56,7 +56,7 @@ public class FileUploader {
             throw new IllegalArgumentException("File: " + file.getName() + "doesn't exist");
         }
 
-        new FileUploader().uploadFile(file);
+        new MultipartFileUploader().uploadFile(file);
     }
 
     private void uploadFile(File file) {

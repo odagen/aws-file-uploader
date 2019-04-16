@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "app-bucket" {
+resource "aws_s3_bucket" "s3-huge-objects" {
   bucket = "huge-objects-odagen"
   acl = "private"
 
