@@ -1,4 +1,4 @@
 resource "aws_s3_bucket" "time-log-odagen" {
-  bucket = "time-log-odagen"
-  acl = "private"
+  bucket = "${local.bucket_name}"
+  acl = "${local.bucket_acl}"
 }
